@@ -1,0 +1,12 @@
+{
+	"authors": [
+		"Tristan B. Kildaire"
+	],
+	"copyright": "Copyright © 2021, Tristan B. Kildaire",
+	"dependencies": {
+		"vibe-d": "~>0.9.3"
+	},
+	"description": "A minimal D application.",
+	"license": "GPLv3",
+	"name": "libyggdrasil"
+}
