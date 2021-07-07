@@ -99,7 +99,7 @@ public class NodeInfo
 		parse();
 		
 	}
-
+	
 	public string getName()
 	{
 		return nodeName;
@@ -188,7 +188,17 @@ public class YggdrasilNode
 	public NodeInfo getNodeInfo()
 	{
 		YggdrasilRequest req = new YggdrasilRequest(RequestType.NODEINFO, key);
-		return new NodeInfo(sillyWillyRequest(peer, req));
+
+		JSONValue resp = sillyWillyRequest(peer, req);
+
+		if(resp.type == JSONType.null_)
+		{
+			return null;
+		}
+		else
+		{
+			return new NodeInfo(resp);	
+		}
 	}
 
 	public YggdrasilNode[] getPeers()
