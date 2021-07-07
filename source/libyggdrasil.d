@@ -95,6 +95,31 @@ public class NodeInfo
 		
 	}
 
+	public string getName()
+	{
+		return nodeName;
+	}
+
+	public string getGroupName()
+	{
+		return groupName;
+	}
+
+	public string getCountry()
+	{
+		return country;
+	}
+
+	public string getAddress()
+	{
+		return "unavailable";
+	}
+
+	public JSONValue getOperatorBlock()
+	{
+		return operatorBlock;
+	}
+
 	private void parse()
 	{
 		foreach(string item; nodeInfoJSON.object().keys)
