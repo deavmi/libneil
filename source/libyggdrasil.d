@@ -162,15 +162,16 @@ public class NodeInfo
 */
 public class YggdrasilNode
 {
-	public static YggdrasilPeer peer;
+	private YggdrasilPeer peer;
 	
 	private string key;
 	private JSONValue selfInfo;
 	private JSONValue nodeInfo;
 	
 	
-	this(string key)
+	this(YggdrasilPeer peer, string key)
 	{
+		this.peer = peer;
 		this.key = key;
 	}
 
@@ -192,7 +193,7 @@ public class YggdrasilNode
 			foreach(JSONValue ckey; resp[resp.object().keys[0]]["keys"].array())
 			{
 				string ckeyStr = ckey.str();
-				peers ~= new YggdrasilNode(ckeyStr);
+				peers ~= new YggdrasilNode(peer, ckeyStr);
 			}
 		}
 
@@ -226,7 +227,6 @@ public class YggdrasilPeer
 	{
 		this.yggdrasilAddress = yggdrasilAddress;
 
-		YggdrasilNode.peer = this;
 		/* Fetch data over socket and set */
 		
 	}
@@ -245,7 +245,7 @@ public class YggdrasilPeer
 
 	public YggdrasilNode fetchNode(string key)
 	{
-		return new YggdrasilNode(key);		
+		return new YggdrasilNode(this, key);		
 	}
 }
 
