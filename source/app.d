@@ -1,3 +1,5 @@
+module libyggdrasil;
+
 import std.stdio;
 
 import std.json;
