@@ -6,6 +6,11 @@ import std.json;
 import std.socket;
 import std.string;
 
+
+
+
+
+
 private string[] getKeys()
 {
 	string url = "http://[21e:e795:8e82:a9e2:ff48:952d:55f2:f0bb]/static/current";
@@ -113,6 +118,11 @@ public class NodeInfo
 	public string getAddress()
 	{
 		return "unavailable";
+	}
+
+	public string getKey()
+	{
+		return key;
 	}
 
 	public JSONValue getOperatorBlock()
