@@ -120,6 +120,11 @@ public class NodeInfo
 		return operatorBlock;
 	}
 
+	public JSONValue getFullJSON()
+	{
+		return nodeInfoJSON;
+	}
+
 	private void parse()
 	{
 		foreach(string item; nodeInfoJSON.object().keys)
