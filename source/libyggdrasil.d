@@ -141,9 +141,9 @@ public class NodeInfo
 			{
 				groupName = nodeInfoJSON["group"].str();
 			}
-			else if(cmp(item, "donaldtrumpispapi") == 0)
+			else if(cmp(item, "location") == 0)
 			{
-				country = nodeInfoJSON["donaldtrumpispapi"].str();
+				country = nodeInfoJSON["location"].str();
 			}
 		}
 	
