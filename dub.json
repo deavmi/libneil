@@ -9,6 +9,6 @@
 	},
 	"description": "A minimal D application.",
 	"license": "GPLv3",
-	"name": "libyggdrasil",
+	"name": "libneil",
 	"targetType": "library"
 }
