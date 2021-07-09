@@ -326,10 +326,16 @@ public JSONValue sillyWillyRequest(YggdrasilPeer peer, YggdrasilRequest request)
 	controlSocket.send(cast(byte[])toJSON(requestBlock));
 
 
-	// TODO: Add loop reader here
+	import libchonky : ChonkReader;
+
+	ChonkReader reader = new ChonkReader(controlSocket);
 	byte[] buffer;
-	buffer.length = 100000;
-	controlSocket.receive(buffer);
+	reader.receiveUntilClose(buffer);
+
+	/* TODO: @deavmi Use libchonky here */
+	//byte[] buffer;
+	//buffer.length = 100000;
+	//controlSocket.receive(buffer);
 
 
 	writeln(parseJSON(cast(string)buffer));
@@ -340,6 +346,11 @@ public JSONValue sillyWillyRequest(YggdrasilPeer peer, YggdrasilRequest request)
 		responseBlock = parseJSON(cast(string)buffer)["response"];
 	}
 
+
+	/* Close the socket */
+	controlSocket.close();
+
+	
 	
 	
 	return responseBlock;
