@@ -3,9 +3,10 @@
 	"versions": {
 		"botan": "1.12.19",
 		"botan-math": "1.0.3",
-		"diet-ng": "1.7.5",
+		"diet-ng": "1.7.7",
 		"eventcore": "0.9.17",
 		"libasync": "0.8.6",
+		"libchonky": "0.0.4",
 		"memutils": "1.0.4",
 		"mir-linux-kernel": "1.0.1",
 		"openssl": "1.1.6+1.0.1g",

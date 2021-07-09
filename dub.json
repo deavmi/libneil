@@ -4,7 +4,7 @@
 	],
 	"copyright": "Copyright © 2021, Tristan B. Kildaire",
 	"dependencies": {
-		"libchonky": "~>0.0.3",
+		"libchonky": "~>0.0.4",
 		"vibe-d": "~>0.9.3"
 	},
 	"description": "A minimal D application.",
