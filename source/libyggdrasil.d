@@ -1,19 +1,11 @@
 module libyggdrasil;
 
 import std.stdio;
-
 import std.json;
 import std.socket;
 import std.string;
 import std.conv : to;
 import libchonky : ChonkReader;
-
-
-
-
-
-
-
 
 public final class BuildInfo
 {
@@ -409,6 +401,9 @@ public YggdrasilResponse makeRequest(YggdrasilPeer peer, YggdrasilRequest reques
 
 				/* Create the YggdrasilResponse object */
 				response = new YggdrasilResponse(reuqestResponse);
+
+				/* Close the socket */
+				controlSocket.close();
 			}
 			else
 			{
