@@ -11,42 +11,7 @@ import libchonky : ChonkReader;
 
 
 
-void main()
-{
 
-
-	
-	
-	Address testNode = parseAddress("201:6c56:f9d5:b7a5:8f42:b1ab:9e0e:5169", 9090);
-	YggdrasilPeer yggNode = new YggdrasilPeer(testNode);
-
-	string[] keys = ["a1b0169eae0b6fb808c60fe82f29855a01e173b3a16bb286cfcfc0ed45a28afb",
-					"b563daa08870d769e7871f581afb9ee339b8a10c2baa45f334beb1d74b0700d7"];
-
-	keys = getKeys();
-	YggdrasilNode[] nodes;
-	foreach(string k; keys)
-	{
-		nodes ~= yggNode.fetchNode(k);
-	}
-
-	foreach(YggdrasilNode node; nodes)
-	{
-		writeln(node.getNodeInfo());
-		writeln("Peers: "~to!(string)(node.getPeers()));
-		
-		YggdrasilRequest req = new YggdrasilRequest(RequestType.GETDHT, node.getKey());
-		writeln(sillyWillyRequest(yggNode, req).toPrettyString());
-		req = new YggdrasilRequest(RequestType.GETDHT, node.getKey());
-		writeln(sillyWillyRequest(yggNode, req).toPrettyString());
-		req = new YggdrasilRequest(RequestType.GETPEERS, node.getKey());
-		writeln(sillyWillyRequest(yggNode, req).toPrettyString());
-		req = new YggdrasilRequest(RequestType.GETSELF, node.getKey());
-		writeln(sillyWillyRequest(yggNode, req).toPrettyString());
-		
-	}
-
-}
 
 
 
