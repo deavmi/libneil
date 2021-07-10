@@ -5,14 +5,17 @@ import std.json : JSONValue, JSONException;
 /**
 * I don't want to re-write this all the time
 */
-public void attemptString(JSONValue nodeInfo, string* var, string key)
+public bool attemptString(JSONValue nodeInfo, string* var, string key)
 {
     try
     {
         *var = nodeInfo[key].str();
+        return true;
     }
     catch(JSONException e)
     {
         /* Non-existent key or wrong type */
+
+        return false;
     }
 }
