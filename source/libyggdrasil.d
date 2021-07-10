@@ -422,37 +422,3 @@ public YggdrasilResponse makeRequest(YggdrasilPeer peer, YggdrasilRequest reques
 
 	return response;
 }
-
-/* TODO: Fix read here */
-public JSONValue sillyWillyRequest(YggdrasilPeer peer, YggdrasilRequest request)
-{
-	Socket controlSocket = new Socket(AddressFamily.INET6, SocketType.STREAM, ProtocolType.TCP);
-	controlSocket.connect(peer.getAddress());
-
-	JSONValue requestBlock = request.generateJSON();
-	controlSocket.send(cast(byte[])toJSON(requestBlock));
-
-
-
-
-	ChonkReader reader = new ChonkReader(controlSocket);
-	byte[] buffer;
-	reader.receiveUntilClose(buffer);
-
-
-	JSONValue responseBlock;
-
-	if(cmp((parseJSON(cast(string)buffer)["status"]).str(), "success") == 0)
-	{
-		responseBlock = parseJSON(cast(string)buffer)["response"];
-	}
-
-
-	/* Close the socket */
-	controlSocket.close();
-
-	
-	
-	
-	return responseBlock;
-}
