@@ -177,6 +177,14 @@ public class NodeInfo
 	}
 }
 
+public final class DHTInfo
+{
+	this()
+	{
+		/* TODO: Implement me */
+	}
+}
+
 /**
 * YggdrasilNode
 *
@@ -207,6 +215,18 @@ public class YggdrasilNode
 
 		/* Create a new NodeInfo object */
 		return new NodeInfo(resp.getJSON());
+	}
+
+	public DHTInfo getDHT()
+	{
+		/* Create the getDHT request */
+		YggdrasilRequest req = new YggdrasilRequest(RequestType.GETDHT, key);
+
+		/* Make the request */
+		YggdrasilResponse resp = makeRequest(peer, req);
+
+		/* TODO: Implement me */
+		return null;
 	}
 
 	public YggdrasilNode[] getPeers()
@@ -251,11 +271,16 @@ public class YggdrasilNode
 	*/
 	public bool ping()
 	{
-		bool status = true;
-
-		/* TODO: Implement me */
-
-		return status;
+		try
+		{
+			/* Attempt to do getDHT */
+			getDHT();
+			return true;
+		}
+		catch(YggdrasilException)
+		{
+			return false;
+		}
 	}
 }
 
@@ -271,10 +296,7 @@ public class YggdrasilPeer
 
 	this(Address yggdrasilAddress)
 	{
-		this.yggdrasilAddress = yggdrasilAddress;
-
-		/* Fetch data over socket and set */
-		
+		this.yggdrasilAddress = yggdrasilAddress;	
 	}
 
 	public Address getAddress()
