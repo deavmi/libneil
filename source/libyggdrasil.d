@@ -6,10 +6,7 @@ import std.json;
 import std.socket;
 import std.string;
 import std.conv : to;
-
-
-
-
+import libchonky : ChonkReader;
 
 
 private string[] getKeys()
@@ -395,13 +392,92 @@ public final class YggdrasilRequest
 
 public final class YggdrasilResponse
 {
-	private JSONValue responseJSON;
-	private bool status;
+	private JSONValue responseBlock;
 
-	this()
+	this(JSONValue responseBlock)
 	{
-
+		
 	}
+}
+
+public final class YggdrasilException : Exception
+{
+	public enum ErrorType
+	{
+		CONTROL_SOCKET_ERROR,
+		JSON_PARSE_ERROR,
+		TIMED_OUT
+	}
+
+	private ErrorType errType;
+
+	this(ErrorType errType)
+	{
+		super("YggdrasilError: "~to!(string)(errType));
+		this.errType = errType;
+	}
+
+	public ErrorType getError()
+	{
+		return errType;
+	}
+}
+
+public YggdrasilResponse makeRequest(YggdrasilPeer peer, YggdrasilRequest request)
+{
+	/* The response */
+	YggdrasilResponse response;
+
+	/* Communication socket */
+	Socket controlSocket;
+
+	try
+	{
+		/* Attempt to create the socket and connect it */
+		controlSocket = new Socket(AddressFamily.INET6, SocketType.STREAM, ProtocolType.TCP);
+		controlSocket.connect(peer.getAddress());
+
+		/* Make the request */
+		JSONValue requestBlock = request.generateJSON();
+		controlSocket.send(cast(byte[])toJSON(requestBlock));
+
+		/* Await reply till socket closes */
+		ChonkReader reader = new ChonkReader(controlSocket);
+		byte[] buffer;
+		reader.receiveUntilClose(buffer);
+
+		/* Parse the response */
+		JSONValue responseBlock;
+		try
+		{
+			/* Parse the JSON */
+			responseBlock = parseJSON(cast(string)buffer);
+
+			/* Check status of request */
+			if(cmp(responseBlock["status"].str(), "success"))
+			{
+				/* Extract response */
+				JSONValue reuqestResponse = responseBlock["response"];
+
+				/* Create the YggdrasilResponse object */
+				response = new YggdrasilResponse(reuqestResponse);
+			}
+			else
+			{
+				throw new YggdrasilException(YggdrasilException.ErrorType.TIMED_OUT);
+			}
+		}
+		catch(JSONException e)
+		{
+			throw new YggdrasilException(YggdrasilException.ErrorType.JSON_PARSE_ERROR);
+		}
+	}
+	catch(SocketOSException e)
+	{
+		throw new YggdrasilException(YggdrasilException.ErrorType.CONTROL_SOCKET_ERROR);
+	}
+
+	return response;
 }
 
 /* TODO: Fix read here */
@@ -414,19 +490,13 @@ public JSONValue sillyWillyRequest(YggdrasilPeer peer, YggdrasilRequest request)
 	controlSocket.send(cast(byte[])toJSON(requestBlock));
 
 
-	import libchonky : ChonkReader;
+
 
 	ChonkReader reader = new ChonkReader(controlSocket);
 	byte[] buffer;
 	reader.receiveUntilClose(buffer);
 
-	/* TODO: @deavmi Use libchonky here */
-	//byte[] buffer;
-	//buffer.length = 100000;
-	//controlSocket.receive(buffer);
 
-
-	writeln(parseJSON(cast(string)buffer));
 	JSONValue responseBlock;
 
 	if(cmp((parseJSON(cast(string)buffer)["status"]).str(), "success") == 0)
