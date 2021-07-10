@@ -239,9 +239,8 @@ public class YggdrasilNode
 
 	public override string toString()
 	{
-		/* TODO: Fetch getNodeInfo, if possible, else leave key */
-				
-				return getNodeInfo().toString();
+		/* TODO: Fetch getNodeInfo, if possible, else leave key */		
+		return getNodeInfo().toString();
 	}
 
 
