@@ -215,6 +215,12 @@ public class NodeInfo
 	
 	}
 
+	public BuildInfo getBuildInfo()
+	{
+		return new BuildInfo(nodeInfoJSON);
+	}
+
+
 	public override string toString()
 	{
 		return key~" (Name: "~nodeName~", Group: "~groupName~", Operator: "~to!(string)(operatorBlock)~")";
