@@ -5,6 +5,7 @@ import std.stdio;
 import std.json;
 import std.socket;
 import std.string;
+import std.conv : to;
 
 
 
@@ -67,7 +68,62 @@ void main()
 
 }
 
-import std.conv;
+
+
+public final class BuildInfo
+{
+	private string _version = "none", arch = "none", platform = "none", name = "none";
+
+	this(JSONValue nodeInfo)
+	{
+		/* Attempt extraction */
+		extractInfo(nodeInfo);
+	}
+
+	private void extractInfo(JSONValue nodeInfo)
+	{
+		attemptString(nodeInfo, &_version, "buildversion");
+		attemptString(nodeInfo, &arch, "buildarch");
+		attemptString(nodeInfo, &platform, "buildplatform");
+		attemptString(nodeInfo, &name, "buildname");
+	}
+
+	/**
+	* I don't want to re-write this all the time
+	*/
+	private void attemptString(JSONValue nodeInfo, string* var, string key)
+	{
+		try
+		{
+			*var = nodeInfo[key].str();
+		}
+		catch(JSONException e)
+		{
+			/* Non-existent key or wrong type */
+		}
+	}
+
+	public string getVersion()
+	{
+		return _version;
+	}
+
+	public string getName()
+	{
+		return name;
+	}
+
+	public string getPlatform()
+	{
+		return platform;
+	}
+
+	public string getArchitecture()
+	{
+		return arch;
+	}
+
+}
 
 public class NodeInfo
 {
@@ -231,6 +287,21 @@ public class YggdrasilNode
 				
 				return getNodeInfo().toString();
 	}
+
+
+	/**
+	* Checks if the node is online
+	*
+	* This is implemented by doing a getDHT()
+	*/
+	public bool ping()
+	{
+		bool status = true;
+
+		/* TODO: Implement me */
+
+		return status;
+	}
 }
 
 /**
@@ -313,6 +384,17 @@ public final class YggdrasilRequest
 
 
 		return requestBlock;
+	}
+}
+
+public final class YggdrasilResponse
+{
+	private JSONValue responseJSON;
+	private bool status;
+
+	this()
+	{
+
 	}
 }
 
