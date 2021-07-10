@@ -462,7 +462,7 @@ public YggdrasilResponse makeRequest(YggdrasilPeer peer, YggdrasilRequest reques
 			responseBlock = parseJSON(cast(string)buffer);
 
 			/* Check status of request */
-			if(cmp(responseBlock["status"].str(), "success"))
+			if(cmp(responseBlock["status"].str(), "success") == 0)
 			{
 				/* Extract response */
 				JSONValue reuqestResponse = responseBlock["response"];
