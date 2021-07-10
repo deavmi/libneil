@@ -136,14 +136,19 @@ public class NodeInfo
 		return name;
 	}
 
-	public string getGroupName()
+	public string getGroup()
 	{
 		return group;
 	}
 
-	public string getCountry()
+	public string getLocation()
 	{
 		return location;
+	}
+
+	public string getContact()
+	{
+		return contact;
 	}
 
 	public string getKey()
