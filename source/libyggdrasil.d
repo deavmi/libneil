@@ -9,24 +9,7 @@ import std.conv : to;
 import libchonky : ChonkReader;
 
 
-private string[] getKeys()
-{
-	string url = "http://[21e:e795:8e82:a9e2:ff48:952d:55f2:f0bb]/static/current";
-	string[] keys;
-	
-	import std.net.curl;
-	string k = cast(string)get(url);
 
-	//writeln(k);
-
-	JSONValue json = parseJSON(k);
-	json = json["yggnodes"];
-
-	keys = json.object().keys;
-//	writeln(keys);
-
-	return keys;
-}
 
 void main()
 {
@@ -396,7 +379,7 @@ public final class YggdrasilResponse
 
 	this(JSONValue responseBlock)
 	{
-		
+
 	}
 }
 
