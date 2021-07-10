@@ -62,6 +62,35 @@ public final class BuildInfo
 
 }
 
+public final class NodeService
+{
+	private string serviceName;
+	private string protocol;
+	private ushort[] ports;
+	
+	this(string serviceName, string protocol, ushort[] ports)
+	{
+		this.serviceName = serviceName;
+		this.protocol = protocol;
+		this.ports = ports;
+	}
+
+	public string getName()
+	{
+		return serviceName;
+	}
+
+	public string getProtocol()
+	{
+		return protocol;
+	}
+
+	public ushort[] getPorts()
+	{
+		return ports;
+	}
+}
+
 public class NodeInfo
 {
 	private JSONValue nodeInfoJSON;
@@ -136,9 +165,9 @@ public class NodeInfo
 			{
 				nodeName = nodeInfoJSON["name"].str();
 			}
-			else if(cmp(item, "operator") == 0)
+			else if(cmp(item, "contact") == 0)
 			{
-				operatorBlock = nodeInfoJSON["operator"];
+				contactName = nodeInfoJSON["contact"].str();
 			}
 			else if(cmp(item, "group") == 0)
 			{
@@ -186,18 +215,14 @@ public class YggdrasilNode
 
 	public NodeInfo getNodeInfo()
 	{
+		/* Create the NodeInfo request */
 		YggdrasilRequest req = new YggdrasilRequest(RequestType.NODEINFO, key);
 
-		JSONValue resp = sillyWillyRequest(peer, req);
+		/* Make the request */
+		YggdrasilResponse resp = makeRequest(peer, req);
 
-		if(resp.type == JSONType.null_)
-		{
-			return null;
-		}
-		else
-		{
-			return new NodeInfo(resp);	
-		}
+		/* Create a new NodeInfo object */
+		return new NodeInfo(resp.getJSON());
 	}
 
 	public YggdrasilNode[] getPeers()
@@ -336,7 +361,12 @@ public final class YggdrasilResponse
 
 	this(JSONValue responseBlock)
 	{
+		this.responseBlock = responseBlock;
+	}
 
+	public JSONValue getJSON()
+	{
+		return responseBlock;
 	}
 }
 
