@@ -13,6 +13,7 @@ import libchonky : ChonkReader;
 
 public final class BuildInfo
 {
+	private ubyte wellFormed = 0;
 	private string _version = "none", arch = "none", platform = "none", name = "none";
 
 	this(JSONValue nodeInfo)
@@ -23,13 +24,28 @@ public final class BuildInfo
 
 	private void extractInfo(JSONValue nodeInfo)
 	{
-		attemptString(nodeInfo, &_version, "buildversion");
-		attemptString(nodeInfo, &arch, "buildarch");
-		attemptString(nodeInfo, &platform, "buildplatform");
-		attemptString(nodeInfo, &name, "buildname");
+		if(attemptString(nodeInfo, &_version, "buildversion"))
+		{
+			wellFormed++;
+		}
+		if(attemptString(nodeInfo, &arch, "buildarch"))
+		{
+			wellFormed++;
+		}
+		if(attemptString(nodeInfo, &platform, "buildplatform"))
+		{
+			wellFormed++;
+		}
+		if(attemptString(nodeInfo, &name, "buildname"))
+		{
+			wellFormed++;
+		}
 	}
 
-	
+	public bool isWellFormed()
+	{
+		return wellFormed == 4;
+	}
 
 	public string getVersion()
 	{
@@ -90,10 +106,11 @@ public class NodeInfo
 	/**
 	* NodeInfo data
 	*/
+	private ubyte wellFormed = 0;
 	private JSONValue nodeInfoJSON;
 	private string name = "<no name>";
 	private string group = "<no name>";
-	private string country = "<no name>";
+	private string location = "<no name>";
 	private string contact = "<no name>";
 
 
@@ -126,7 +143,7 @@ public class NodeInfo
 
 	public string getCountry()
 	{
-		return country;
+		return location;
 	}
 
 	public string getKey()
@@ -141,27 +158,34 @@ public class NodeInfo
 
 	private void parse()
 	{
-		foreach(string item; nodeInfoJSON.object().keys)
-		{
-			if(cmp(item, "name") == 0)
-			{
-				name = nodeInfoJSON["name"].str();
-			}
-			else if(cmp(item, "contact") == 0)
-			{
-				contact = nodeInfoJSON["contact"].str();
-			}
-			else if(cmp(item, "group") == 0)
-			{
-				group = nodeInfoJSON["group"].str();
-			}
-			else if(cmp(item, "location") == 0)
-			{
-				country = nodeInfoJSON["location"].str();
-			}
-			
-		}
 	
+				if(attemptString(nodeInfoJSON, &name, "name"))
+				{
+					wellFormed++;
+				}
+		
+				if(attemptString(nodeInfoJSON, &contact, "contact"))
+				{
+					wellFormed++;
+				}
+			
+				if(attemptString(nodeInfoJSON, &group, "group"))
+				{
+					wellFormed++;
+				}
+			
+				if(attemptString(nodeInfoJSON, &location, "location"))
+				{
+					wellFormed++;
+				}
+			
+			
+		
+	}
+
+	public bool isWellFormed()
+	{
+		return wellFormed == 4;
 	}
 
 	public BuildInfo getBuildInfo()
