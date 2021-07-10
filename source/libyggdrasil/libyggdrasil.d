@@ -1,4 +1,6 @@
-module libyggdrasil;
+module libyggdrasil.libyggdrasil;
+
+import libyggdrasil.utils : attemptString;
 
 import std.stdio;
 import std.json;
@@ -6,6 +8,8 @@ import std.socket;
 import std.string;
 import std.conv : to;
 import libchonky : ChonkReader;
+
+
 
 public final class BuildInfo
 {
@@ -25,20 +29,7 @@ public final class BuildInfo
 		attemptString(nodeInfo, &name, "buildname");
 	}
 
-	/**
-	* I don't want to re-write this all the time
-	*/
-	private void attemptString(JSONValue nodeInfo, string* var, string key)
-	{
-		try
-		{
-			*var = nodeInfo[key].str();
-		}
-		catch(JSONException e)
-		{
-			/* Non-existent key or wrong type */
-		}
-	}
+	
 
 	public string getVersion()
 	{
@@ -93,43 +84,44 @@ public final class NodeService
 
 public class NodeInfo
 {
-	private JSONValue nodeInfoJSON;
-	private JSONValue operatorBlock;
-	private string nodeName = "<no name>";
-	private string groupName = "<no name>";
-	private string country = "<no name>";
+	/* Key of the node this NodeInfo is associated with */
 	private string key;
-	/* TODO: Standardise */
+
 	/**
-	* Name
-	* Owner
-	* Contact
-	* Group
+	* NodeInfo data
+	*/
+	private JSONValue nodeInfoJSON;
+	private string name = "<no name>";
+	private string group = "<no name>";
+	private string country = "<no name>";
+	private string contact = "<no name>";
+
+
+	/**
+	* Given the response JSON this will extract the
+	* key, NodeInfo as a whole and also attempt to extract
+	* standardized aspects of the NodeInfo
 	*/
 	this(JSONValue nodeInfoJSON)
 	{
-		/* We only do one query (so it will be first) */
-		writeln(nodeInfoJSON);
-		if(nodeInfoJSON.type == JSONType.null_)
-		{
-			return;
-		}
+		/* Save the key from the response */
 		key = nodeInfoJSON.object().keys[0];
+
+		/* Extract the entry */
 		this.nodeInfoJSON = nodeInfoJSON[key];
 
-		
+		/* Attempt to parse the standardized parts */
 		parse();
-		
 	}
 	
 	public string getName()
 	{
-		return nodeName;
+		return name;
 	}
 
 	public string getGroupName()
 	{
-		return groupName;
+		return group;
 	}
 
 	public string getCountry()
@@ -137,19 +129,9 @@ public class NodeInfo
 		return country;
 	}
 
-	public string getAddress()
-	{
-		return "unavailable";
-	}
-
 	public string getKey()
 	{
 		return key;
-	}
-
-	public JSONValue getOperatorBlock()
-	{
-		return operatorBlock;
 	}
 
 	public JSONValue getFullJSON()
@@ -163,20 +145,21 @@ public class NodeInfo
 		{
 			if(cmp(item, "name") == 0)
 			{
-				nodeName = nodeInfoJSON["name"].str();
+				name = nodeInfoJSON["name"].str();
 			}
 			else if(cmp(item, "contact") == 0)
 			{
-				contactName = nodeInfoJSON["contact"].str();
+				contact = nodeInfoJSON["contact"].str();
 			}
 			else if(cmp(item, "group") == 0)
 			{
-				groupName = nodeInfoJSON["group"].str();
+				group = nodeInfoJSON["group"].str();
 			}
 			else if(cmp(item, "location") == 0)
 			{
 				country = nodeInfoJSON["location"].str();
 			}
+			
 		}
 	
 	}
@@ -189,7 +172,8 @@ public class NodeInfo
 
 	public override string toString()
 	{
-		return key~" (Name: "~nodeName~", Group: "~groupName~", Operator: "~to!(string)(operatorBlock)~")";
+		/* TODO: */
+		return ""; 
 	}
 }
 
@@ -227,18 +211,22 @@ public class YggdrasilNode
 
 	public YggdrasilNode[] getPeers()
 	{
+		/* Peers */
 		YggdrasilNode[] peers;
 
+		/* Create the getPeers request */
 		YggdrasilRequest req = new YggdrasilRequest(RequestType.GETPEERS, key);
-		JSONValue resp = sillyWillyRequest(peer, req);
 
-		if(resp.type != JSONType.null_)
+		/* Make the request */
+		YggdrasilResponse resp = makeRequest(peer, req);
+
+		/* Get the JSON and process the list */
+		JSONValue respJSON = resp.getJSON();
+
+		foreach(JSONValue ckey; respJSON[respJSON.object().keys[0]]["keys"].array())
 		{
-			foreach(JSONValue ckey; resp[resp.object().keys[0]]["keys"].array())
-			{
-				string ckeyStr = ckey.str();
-				peers ~= new YggdrasilNode(peer, ckeyStr);
-			}
+			string ckeyStr = ckey.str();
+			peers ~= new YggdrasilNode(peer, ckeyStr);
 		}
 
 		return peers;
