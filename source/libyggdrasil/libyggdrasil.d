@@ -13,7 +13,7 @@ import libchonky : ChonkReader;
 
 public final class BuildInfo
 {
-	private ubyte wellFormed = 0;
+	public ubyte wellFormed = 0;
 	private string _version = "none", arch = "none", platform = "none", name = "none";
 
 	this(JSONValue nodeInfo)
@@ -106,7 +106,7 @@ public class NodeInfo
 	/**
 	* NodeInfo data
 	*/
-	private ubyte wellFormed = 0;
+	public ubyte wellFormed = 0;
 	private JSONValue nodeInfoJSON;
 	private string name = "<no name>";
 	private string group = "<no name>";
